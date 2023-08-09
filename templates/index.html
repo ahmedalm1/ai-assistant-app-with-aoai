@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Your AI Assistant</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        h1 {
+            font-size: 36px;
+            margin-bottom: 20px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        #questionInput {
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            width: 300px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #4285f4;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        button:hover {
+            background-color: #357ae8;
+        }
+
+        button:active {
+            transform: scale(0.95);
+        }
+
+        #answer {
+            margin-top: 20px;
+            font-size: 18px;
+            max-width: 80%;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>Hello, how can I help you?</h1>
+    <form id="questionForm">
+        <input type="text" id="questionInput" name="question" placeholder="Enter your question here">
+        <button type="submit" id="submitButton">Submit</button>
+    </form>
+    <div id="answer"></div>
+
+    <script>
+        const form = document.getElementById('questionForm');
+        const questionInput = document.getElementById('questionInput');
+        const answerDiv = document.getElementById('answer');
+        const submitButton = document.getElementById('submitButton');
+
+        form.addEventListener('submit', (event) => {
+            event.preventDefault();
+            const question = questionInput.value;
+
+            fetch('/ask', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: `question=${question}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                questionInput.value = '';
+
+                answerDiv.textContent = `Answer: ${data.answer}`;
+                answerDiv.style.marginTop = '20px'; 
+            })
+            .catch(error => {
+                answerDiv.textContent = "Sorry, something went wrong. Please try again later.";
+            });
+        });
+    </script>
+</body>
+</html>
